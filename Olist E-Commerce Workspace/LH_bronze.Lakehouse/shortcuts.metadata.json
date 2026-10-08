@@ -1,0 +1,14 @@
+[
+  {
+    "name": "source",
+    "path": "/Files",
+    "target": {
+      "type": "AzureBlobStorage",
+      "azureBlobStorage": {
+        "connectionId": "b0d63bad-e853-448c-aa27-bd02057c4446",
+        "location": "https://stfabricmedallion0111.blob.core.windows.net",
+        "subpath": "/source"
+      }
+    }
+  }
+]

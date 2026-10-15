@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Source",
+    "path": "/Files",
+    "target": {
+      "type": "AdlsGen2",
+      "adlsGen2": {
+        "connectionId": "d20047db-1792-4e69-b337-f445c0ce24a2",
+        "location": "https://stfabric111mmm.dfs.core.windows.net",
+        "subpath": "/source/Source"
+      }
+    }
+  }
+]

@@ -35,7 +35,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 from delta.tables import DeltaTable
 
-CONFIG_PATH = r"Files/silver_cleaning_config (4).json"
+CONFIG_PATH = r"Files/silver_cleaning_config.json"
 
 BRONZE_FILES_ROOT = r"abfss://9d196083-db64-4212-9c53-2f2ad21842f8@onelake.dfs.fabric.microsoft.com/f48d08f6-b124-4022-9225-c78ec27438ae/Files"
 
@@ -186,30 +186,83 @@ def check_table(df, t):
 
 # MARKDOWN ********************
 
-# #### Referential check for product_id
+# #### Referential checks
 
 # CELL ********************
 
-def check_fk(child_df, child_col, parent_df, parent_col):
-    """Rows in child_df whose key does not exist in parent_df (reported, not removed)."""
-    # unique list of valid keys from the parent table
-    parent_keys = parent_df.select(F.col(parent_col).alias("_pk")).distinct()
-    # nulls are counted separately below, so exclude them from the orphan check
-    child_nonnull = child_df.filter(F.col(child_col).isNotNull())
-    # left_anti join = keep only child rows with NO match in parent_keys
-    orphans = child_nonnull.join(parent_keys, F.col(child_col) == F.col("_pk"), "left_anti")
-    return {
-        "orphan_rows": orphans.count(),                                   # how many bad rows
-        "distinct_orphan_keys": orphans.select(child_col).distinct().count(),  # how many unique missing keys
-        "null_fk_rows": child_df.filter(F.col(child_col).isNull()).count(),    # rows with no key at all
-        "orphans": orphans,                                               # the rows themselves, for inspection
-    }
-
+# MAGIC %%sql
+# MAGIC -- Each block checks one FK: child rows whose key is missing in the parent (reported, not removed)
+# MAGIC -- Parent keys are DISTINCT so the join never multiplies child rows
+# MAGIC 
+# MAGIC SELECT 'orders.customer_id -> customers.customer_id' AS relationship,
+# MAGIC        COUNT(CASE WHEN c.customer_id IS NOT NULL AND p.customer_id IS NULL THEN 1 END)          AS orphan_rows,
+# MAGIC        COUNT(DISTINCT CASE WHEN c.customer_id IS NOT NULL AND p.customer_id IS NULL
+# MAGIC                            THEN c.customer_id END)                                              AS distinct_orphan_keys,
+# MAGIC        COUNT(CASE WHEN c.customer_id IS NULL THEN 1 END)                                        AS null_fk_rows
+# MAGIC FROM LH_silver.dbo.orders c
+# MAGIC LEFT JOIN (SELECT DISTINCT customer_id FROM LH_silver.dbo.customers) p
+# MAGIC        ON c.customer_id = p.customer_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'order_items.order_id -> orders.order_id',
+# MAGIC        COUNT(CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN c.order_id END),
+# MAGIC        COUNT(CASE WHEN c.order_id IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.order_items c
+# MAGIC LEFT JOIN (SELECT DISTINCT order_id FROM LH_silver.dbo.orders) p
+# MAGIC        ON c.order_id = p.order_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'order_items.product_id -> products.product_id',
+# MAGIC        COUNT(CASE WHEN c.product_id IS NOT NULL AND p.product_id IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.product_id IS NOT NULL AND p.product_id IS NULL THEN c.product_id END),
+# MAGIC        COUNT(CASE WHEN c.product_id IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.order_items c
+# MAGIC LEFT JOIN (SELECT DISTINCT product_id FROM LH_silver.dbo.products) p
+# MAGIC        ON c.product_id = p.product_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'order_items.seller_id -> sellers.seller_id',
+# MAGIC        COUNT(CASE WHEN c.seller_id IS NOT NULL AND p.seller_id IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.seller_id IS NOT NULL AND p.seller_id IS NULL THEN c.seller_id END),
+# MAGIC        COUNT(CASE WHEN c.seller_id IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.order_items c
+# MAGIC LEFT JOIN (SELECT DISTINCT seller_id FROM LH_silver.dbo.sellers) p
+# MAGIC        ON c.seller_id = p.seller_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'order_payments.order_id -> orders.order_id',
+# MAGIC        COUNT(CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN c.order_id END),
+# MAGIC        COUNT(CASE WHEN c.order_id IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.order_payments c
+# MAGIC LEFT JOIN (SELECT DISTINCT order_id FROM LH_silver.dbo.orders) p
+# MAGIC        ON c.order_id = p.order_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'order_reviews.order_id -> orders.order_id',
+# MAGIC        COUNT(CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.order_id IS NOT NULL AND p.order_id IS NULL THEN c.order_id END),
+# MAGIC        COUNT(CASE WHEN c.order_id IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.order_reviews c
+# MAGIC LEFT JOIN (SELECT DISTINCT order_id FROM LH_silver.dbo.orders) p
+# MAGIC        ON c.order_id = p.order_id
+# MAGIC 
+# MAGIC UNION ALL
+# MAGIC SELECT 'products.product_category_name -> translation.product_category_name',
+# MAGIC        COUNT(CASE WHEN c.product_category_name IS NOT NULL AND p.product_category_name IS NULL THEN 1 END),
+# MAGIC        COUNT(DISTINCT CASE WHEN c.product_category_name IS NOT NULL AND p.product_category_name IS NULL
+# MAGIC                            THEN c.product_category_name END),
+# MAGIC        COUNT(CASE WHEN c.product_category_name IS NULL THEN 1 END)
+# MAGIC FROM LH_silver.dbo.products c
+# MAGIC LEFT JOIN (SELECT DISTINCT product_category_name
+# MAGIC            FROM LH_silver.dbo.product_category_name_translation) p
+# MAGIC        ON c.product_category_name = p.product_category_name
 
 # METADATA ********************
 
 # META {
-# META   "language": "python",
+# META   "language": "sparksql",
 # META   "language_group": "synapse_pyspark"
 # META }
 
@@ -303,27 +356,6 @@ print({k: v for k, v in cast_report.items() if v} or "No cast failures")
 
 # MARKDOWN ********************
 
-# #### Results: product_id check
-
-# CELL ********************
-
-# Every product_id in order_items should exist in products
-fk = check_fk(clean["order_items"], "product_id", clean["products"], "product_id")
-print(f"order_items rows with product_id not in products: {fk['orphan_rows']} "
-      f"({fk['distinct_orphan_keys']} distinct ids)")
-print(f"order_items rows with null product_id: {fk['null_fk_rows']}")
-if fk["orphan_rows"]:
-    display(fk["orphans"])
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# MARKDOWN ********************
-
 # #### Results: delivery timeline flags (orders)
 
 # CELL ********************
@@ -348,8 +380,7 @@ display(
 
 # MARKDOWN ********************
 
-# ## Write to Silver **incremental**
-# First run creates each table. Later runs read only rows at or after the latest `watermark_column` value already in Silver (tables without a watermark are re-read in full) and **merge** them on `primary_key`. Adds `_ingested_at` to every table (`_source_file` is added when reading).
+# ## load to silver
 
 # CELL ********************
 

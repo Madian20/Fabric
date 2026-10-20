@@ -1,0 +1,86 @@
+/// One row per order, the hub of the model. Holds order status and lifecycle dates, and links to customers, the date table, and all fact tables.
+table dim_orders
+	lineageTag: c2deb544-d858-4234-92fe-2aa93357e146
+	sourceLineageTag: e4e0642c-dcc4-4743-9d35-0883e6af8816
+
+	/// Unique identifier of the order (primary key).
+	column order_id
+		dataType: string
+		lineageTag: c2bd1b47-6c05-4994-93fa-343cd83123b7
+		sourceLineageTag: 4d869396-6723-456f-b728-bdb4ce00cdf6
+		sourceColumn: order_id
+
+	/// Order-level customer key, linking the order to dim_customers.
+	column customer_id
+		dataType: string
+		lineageTag: 80f45ab2-51a1-4126-a633-f041c30339b3
+		sourceLineageTag: 2aaa031d-3f47-4d19-950e-dc4ba1a37e58
+		sourceColumn: customer_id
+
+	/// Current status of the order (e.g., delivered, shipped, canceled).
+	column order_status
+		dataType: string
+		lineageTag: ef2beecc-0584-48ef-bb3f-676b3b436b19
+		sourceLineageTag: 33e59cf5-a402-41a9-be85-84e15b0062a5
+		sourceColumn: order_status
+
+	/// Date and time the customer placed the order.
+	column order_purchase_timestamp
+		dataType: dateTime
+		lineageTag: baf61e43-52f8-437e-a057-ef5ec77bb271
+		sourceLineageTag: 1d125206-d5ab-4a43-a896-27e51c9fce47
+		sourceColumn: order_purchase_timestamp
+
+	/// Date and time the payment was approved.
+	column order_approved_at
+		dataType: dateTime
+		lineageTag: 9f4f2611-98c6-4d09-8c83-6f638635d5d8
+		sourceLineageTag: 98e66b4c-da87-4ec0-ab47-da46d42da8b8
+		sourceColumn: order_approved_at
+
+	/// Date the order was handed to the logistics carrier.
+	column order_delivered_carrier_date
+		dataType: dateTime
+		lineageTag: 828cc702-c732-479d-9a8d-6d14b589a792
+		sourceLineageTag: f112a689-1d23-4d39-b484-31a17844ec40
+		sourceColumn: order_delivered_carrier_date
+
+	/// Date the order was delivered to the customer.
+	column order_delivered_customer_date
+		dataType: dateTime
+		lineageTag: 58cf6e2f-2f3e-4c8e-8714-4c199655a192
+		sourceLineageTag: d76e92de-8cea-4f2f-b85f-159f6386b569
+		sourceColumn: order_delivered_customer_date
+
+	/// Delivery date estimated for the customer at purchase time.
+	column order_estimated_delivery_date
+		dataType: dateTime
+		lineageTag: 9acdac29-fbec-43b1-9529-364f7b6ea56d
+		sourceLineageTag: 60c2d967-bc5c-4821-b1c2-7eadda6548e2
+		sourceColumn: order_estimated_delivery_date
+
+	/// Purchase date without time. Used for the relationship to dim_date.
+	column order_purchase_date
+		dataType: dateTime
+		lineageTag: 15aa0a78-bcbf-4cbb-abca-044930b5f548
+		sourceLineageTag: 441a7732-3366-4f44-af05-32859819afd8
+		sourceColumn: order_purchase_date
+
+	partition dim_orders-partition = entity
+		mode: directQuery
+		source
+			entityName: dim_orders
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

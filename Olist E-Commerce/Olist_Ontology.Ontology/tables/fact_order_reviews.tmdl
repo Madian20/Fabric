@@ -1,0 +1,72 @@
+/// One row per customer review of an order.
+table fact_order_reviews
+	lineageTag: b49e32d6-6ed3-49cc-bc05-887f8ccd8052
+	sourceLineageTag: 41a46a89-ef73-4850-9929-e7ca734f7dbd
+
+	/// Order being reviewed (links to dim_orders).
+	column order_id
+		dataType: string
+		lineageTag: bddf0069-ca44-46a8-9fe9-0b9cf87b1524
+		sourceLineageTag: 2a238d22-01af-4497-89cd-53c810a1372d
+		sourceColumn: order_id
+
+	/// Unique identifier of the review.
+	column review_id
+		dataType: string
+		lineageTag: 0c6b73a7-4829-4231-a1a9-1d861f706641
+		sourceLineageTag: f7bfa893-5cc7-418a-bfa0-a1ab53479b37
+		sourceColumn: review_id
+
+	/// Satisfaction score from 1 (worst) to 5 (best).
+	column review_score
+		dataType: int64
+		lineageTag: 9fc53350-3019-413f-8b9a-ab6e6c0456e8
+		sourceLineageTag: 0e6a2da3-edc0-44da-8b9b-adcace25eaaa
+		sourceColumn: review_score
+
+	/// Optional title of the review comment.
+	column review_comment_title
+		dataType: string
+		lineageTag: b65e2841-356d-46aa-993c-a3ae47321f19
+		sourceLineageTag: d1bddc9d-de7e-41bb-9f48-795f76925cfe
+		sourceColumn: review_comment_title
+
+	/// Optional free-text comment left by the customer.
+	column review_comment_message
+		dataType: string
+		lineageTag: 93a99e0d-d81b-48bc-bb65-525859172a30
+		sourceLineageTag: 475a3f9c-354f-433f-945d-879329a38ea2
+		sourceColumn: review_comment_message
+
+	/// Date the satisfaction survey was sent to the customer.
+	column review_creation_date
+		dataType: dateTime
+		lineageTag: b7df96de-8021-4a18-b27e-7fa0af0d69ac
+		sourceLineageTag: 5d027d25-f7e2-46cc-bef6-986e5c2b7482
+		sourceColumn: review_creation_date
+
+	/// Date and time the customer answered the survey.
+	column review_answer_timestamp
+		dataType: dateTime
+		lineageTag: b13d4de5-986d-4e10-b0af-0ade782c4711
+		sourceLineageTag: ed8a8b42-f3e1-44a2-9efa-8dec78df6904
+		sourceColumn: review_answer_timestamp
+
+	partition fact_order_reviews-partition = entity
+		mode: directQuery
+		source
+			entityName: fact_order_reviews
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

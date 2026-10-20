@@ -1,0 +1,74 @@
+/// One row per payment record. An order can have several payments (e.g., voucher plus card).
+table fact_order_payments
+	lineageTag: 94edb749-25a9-426a-bfc2-26ce1315a1eb
+	sourceLineageTag: [dbo].[fact_order_payments]
+
+	/// Order the payment belongs to (links to dim_orders).
+	column order_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 4dbbf421-703e-47de-9e26-2207800c9282
+		sourceLineageTag: order_id
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sequence number of the payment within the order.
+	column payment_sequential
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: e8ab7fb0-6a97-4509-9b53-2cfb127a56b8
+		sourceLineageTag: payment_sequential
+		summarizeBy: sum
+		sourceColumn: payment_sequential
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Payment method (e.g., credit_card, boleto, voucher, debit_card).
+	column payment_type
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 2ceafcfd-b60a-441f-b101-8bbd8f602ce8
+		sourceLineageTag: payment_type
+		summarizeBy: none
+		sourceColumn: payment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Number of installments chosen by the customer.
+	column payment_installments
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9ea993a3-abab-414d-b4c9-9e08d669d961
+		sourceLineageTag: payment_installments
+		summarizeBy: sum
+		sourceColumn: payment_installments
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Amount paid in this payment record.
+	column payment_value
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(12, 2)
+		lineageTag: a62fe372-1714-4aa9-aeca-531d410382e3
+		sourceLineageTag: payment_value
+		summarizeBy: sum
+		sourceColumn: payment_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition fact_order_payments = entity
+		mode: directLake
+		source
+			entityName: fact_order_payments
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

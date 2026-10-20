@@ -1,0 +1,25 @@
+model Model
+	culture: en-US
+	collation: Latin1_General_100_BIN2_UTF8
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["DatabaseQuery"]
+
+annotation PBI_ProTooling = ["WebModelingEdit","DaxQueryView_Desktop","TMDLView_Desktop"]
+
+ref table dim_customers
+ref table dim_date
+ref table dim_products
+ref table dim_sellers
+ref table fact_order_items
+ref table fact_order_payments
+ref table fact_order_reviews
+ref table dim_orders
+ref table 'Olist Measures'
+

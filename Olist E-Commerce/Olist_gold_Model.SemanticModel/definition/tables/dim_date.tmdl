@@ -1,0 +1,40 @@
+/// Date table used for time intelligence. Marked as the model's date table
+table dim_date
+	lineageTag: 03c76027-5732-454c-b44f-900e5253f496
+	sourceLineageTag: [dbo].[dim_date]
+	dataCategory: Time
+
+	/// Integer representation of the date in YYYYMMDD format (e.g., 20180131). Not used in relationships.
+	column date_key
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 8525137c-56be-4604-a5e4-a8e20deabdc4
+		sourceLineageTag: date_key
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Calendar date, one row per day. Key column that relates dim_date to dim_orders
+	column date
+		dataType: dateTime
+		isKey
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: c16767cc-af41-436c-80f5-a875e8287e47
+		sourceLineageTag: date
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = entity
+		mode: directLake
+		source
+			entityName: dim_date
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

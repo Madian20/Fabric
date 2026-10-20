@@ -1,0 +1,65 @@
+/// One row per product, with category and physical attributes.
+table dim_products
+	lineageTag: 73e0440d-5b65-4e3e-bca2-c67270d7a014
+	sourceLineageTag: 717ad65d-ed76-43f2-b1a8-610f6f302e1d
+
+	/// Unique identifier of the product (primary key).
+	column product_id
+		dataType: string
+		lineageTag: 8f8b3156-b211-4d7f-9722-4253a3e13ec6
+		sourceLineageTag: 592d1e12-572a-4950-9ea3-944b4136521f
+		sourceColumn: product_id
+
+	/// Product weight in grams.
+	column product_weight_g
+		dataType: int64
+		lineageTag: 5f841465-e274-46cf-b866-c3107b1af6a1
+		sourceLineageTag: e942e17e-4076-453d-b2b4-99922d4fcfd8
+		sourceColumn: product_weight_g
+
+	/// Product length in centimeters.
+	column product_length_cm
+		dataType: int64
+		lineageTag: 2f31df24-309b-4094-b266-a1dc915cbf1c
+		sourceLineageTag: ac01131b-9ce3-4a74-9d7b-8fb79a0a6558
+		sourceColumn: product_length_cm
+
+	/// Product height in centimeters.
+	column product_height_cm
+		dataType: int64
+		lineageTag: 77ca6d24-a1fc-4eab-a88f-d4b5e0844725
+		sourceLineageTag: 383197d2-355a-42e2-a950-8b490c0e7db0
+		sourceColumn: product_height_cm
+
+	/// Product width in centimeters.
+	column product_width_cm
+		dataType: int64
+		lineageTag: 3639d314-593f-45d5-8849-ead3b04453ad
+		sourceLineageTag: c4e4fc51-1949-4870-b1d8-660dd541c2f8
+		sourceColumn: product_width_cm
+
+	/// Name of the product category.
+	column product_category_name
+		dataType: string
+		lineageTag: c1cf19c1-8671-46d6-a01a-5ca970192d96
+		sourceLineageTag: 799e2726-2c24-435e-ad93-61eb59b24edd
+		sourceColumn: product_category_name
+
+	partition dim_products-partition = entity
+		mode: directQuery
+		source
+			entityName: dim_products
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

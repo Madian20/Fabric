@@ -1,0 +1,58 @@
+/// One row per payment record. An order can have several payments (e.g., voucher plus card).
+table fact_order_payments
+	lineageTag: 724327f4-ffc4-49d0-8f8e-0310b2d64ddb
+	sourceLineageTag: 94edb749-25a9-426a-bfc2-26ce1315a1eb
+
+	/// Order the payment belongs to (links to dim_orders).
+	column order_id
+		dataType: string
+		lineageTag: c014b03e-2cb3-4ab1-93b6-8ca81a43b87b
+		sourceLineageTag: 4dbbf421-703e-47de-9e26-2207800c9282
+		sourceColumn: order_id
+
+	/// Sequence number of the payment within the order.
+	column payment_sequential
+		dataType: int64
+		lineageTag: f6562718-7a20-4030-84ec-36446dab526f
+		sourceLineageTag: e8ab7fb0-6a97-4509-9b53-2cfb127a56b8
+		sourceColumn: payment_sequential
+
+	/// Payment method (e.g., credit_card, boleto, voucher, debit_card).
+	column payment_type
+		dataType: string
+		lineageTag: 46a1f827-a94c-4da4-bb1f-b9845a016fbf
+		sourceLineageTag: 2ceafcfd-b60a-441f-b101-8bbd8f602ce8
+		sourceColumn: payment_type
+
+	/// Number of installments chosen by the customer.
+	column payment_installments
+		dataType: int64
+		lineageTag: 30402491-2eb7-49dc-8c5a-de23987cfeb9
+		sourceLineageTag: 9ea993a3-abab-414d-b4c9-9e08d669d961
+		sourceColumn: payment_installments
+
+	/// Amount paid in this payment record.
+	column payment_value
+		dataType: decimal
+		lineageTag: ca3d6a71-3fef-490e-913b-f262940d1771
+		sourceLineageTag: a62fe372-1714-4aa9-aeca-531d410382e3
+		sourceColumn: payment_value
+
+	partition fact_order_payments-partition = entity
+		mode: directQuery
+		source
+			entityName: fact_order_payments
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

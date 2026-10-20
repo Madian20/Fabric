@@ -1,0 +1,73 @@
+/// One row per payment record. An order can have several payments (e.g., voucher plus card).
+entity OrderPayment
+	lineageTag: 41f9c124-1c74-4302-a4f3-6895987b8956
+	backingTable: fact_order_payments
+	keyProperty: order_id
+	keyProperty: payment_sequential
+
+	/// Order the payment belongs to (links to dim_orders).
+	property order_id
+		dataType: string
+		lineageTag: de5279d9-7bb1-4792-88c2-aaa798be9eab
+
+		backingConfiguration
+			valueColumn: fact_order_payments.order_id
+
+	/// Sequence number of the payment within the order.
+	property payment_sequential
+		dataType: int64
+		lineageTag: 2a867759-8a7d-4e5c-9870-ea165e23770b
+
+		backingConfiguration
+			valueColumn: fact_order_payments.payment_sequential
+
+		synonym 'payment sequence'
+
+		synonym 'installment sequence'
+
+	/// Payment method (e.g., credit_card, boleto, voucher, debit_card).
+	property payment_type
+		dataType: string
+		lineageTag: bb248269-a39d-47eb-9780-a21db07729c3
+
+		backingConfiguration
+			valueColumn: fact_order_payments.payment_type
+
+		synonym method
+
+		synonym 'payment method'
+
+	/// Number of installments chosen by the customer.
+	property payment_installments
+		dataType: int64
+		lineageTag: fa75659f-8d84-442a-88b7-afd95ccea2a2
+
+		backingConfiguration
+			valueColumn: fact_order_payments.payment_installments
+
+		synonym installments
+
+		synonym 'number of installments'
+
+	/// Amount paid in this payment record.
+	property payment_value
+		dataType: decimal
+		lineageTag: 03034f9f-a691-4461-a1a3-72f236258756
+
+		backingConfiguration
+			valueColumn: fact_order_payments.payment_value
+
+		synonym 'paid amount'
+
+		synonym 'payment amount'
+
+	synonym payments
+
+	synonym 'payment records'
+
+	synonym transactions
+
+	synonym receipts
+
+	synonym 'order payments'
+

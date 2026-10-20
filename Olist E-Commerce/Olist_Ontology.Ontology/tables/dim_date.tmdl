@@ -1,0 +1,37 @@
+/// Date table used for time intelligence. Marked as the model's date table
+table dim_date
+	lineageTag: cf7ca3fd-f266-4630-a031-6391cb4e8288
+	sourceLineageTag: 03c76027-5732-454c-b44f-900e5253f496
+
+	/// Integer representation of the date in YYYYMMDD format (e.g., 20180131). Not used in relationships.
+	column date_key
+		dataType: int64
+		lineageTag: e87b8380-f19a-44fa-8da9-d889e6428406
+		sourceLineageTag: 8525137c-56be-4604-a5e4-a8e20deabdc4
+		sourceColumn: date_key
+
+	/// Calendar date, one row per day. Key column that relates dim_date to dim_orders
+	column date
+		dataType: dateTime
+		lineageTag: 15d258ac-3b83-4eb0-a45f-fcb6d81e5b8d
+		sourceLineageTag: c16767cc-af41-436c-80f5-a875e8287e47
+		sourceColumn: date
+
+	partition dim_date-partition = entity
+		mode: directQuery
+		source
+			entityName: dim_date
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

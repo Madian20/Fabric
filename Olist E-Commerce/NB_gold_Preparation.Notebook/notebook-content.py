@@ -53,7 +53,7 @@ import com.microsoft.spark.fabric
 # conecting to the Delta tables in LH_silver
 
 df_customers = spark.sql("""
-    SELECT customer_unique_id, customer_city, customer_state
+    SELECT customer_id, customer_unique_id, customer_city, customer_state
     FROM LH_silver.dbo.customers
 """)
 
@@ -100,8 +100,6 @@ df_sellers = spark.sql("""
 
 # CELL ********************
 
-from pyspark.sql import functions as F
-
 # Date range: first purchase date to the latest date found in the orders dates
 bounds = df_orders.agg(
     F.min(F.to_date("order_purchase_timestamp")).alias("min_date"),
@@ -137,6 +135,28 @@ print(f"dim_date: {df_date.count()} rows, {start_date} to {end_date}")
 # MARKDOWN ********************
 
 # ## cleaning the tables
+
+# MARKDOWN ********************
+
+# ### cleaning orders table
+
+# CELL ********************
+
+df_orders = (
+    df_orders
+    # purchase: keep the timestamp, add a date-only column for the dim_date relationship
+    .withColumn("order_purchase_date", F.to_date("order_purchase_timestamp"))
+    # delivery: convert in place
+    .withColumn("order_delivered_customer_date", F.to_date("order_delivered_customer_date"))
+    .withColumn("order_estimated_delivery_date", F.to_date("order_estimated_delivery_date"))
+)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
 
 # MARKDOWN ********************
 

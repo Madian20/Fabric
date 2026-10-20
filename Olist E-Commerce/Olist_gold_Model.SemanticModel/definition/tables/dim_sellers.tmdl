@@ -1,0 +1,47 @@
+/// One row per seller, with location details.
+table dim_sellers
+	lineageTag: bd524ba0-5888-4359-9d3e-72faab36ab8b
+	sourceLineageTag: [dbo].[dim_sellers]
+
+	/// Unique identifier of the seller (primary key).
+	column seller_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: aa8ba346-da64-4224-a9ab-946295ea5185
+		sourceLineageTag: seller_id
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// City of the seller.
+	column seller_city
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: d40b867c-33c5-455f-91d3-2a0fbc0ea077
+		sourceLineageTag: seller_city
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	/// State where the seller is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	column seller_state
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: d5e8827d-c49a-471e-a5e3-4533fe75cf2f
+		sourceLineageTag: seller_state
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_sellers = entity
+		mode: directLake
+		source
+			entityName: dim_sellers
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

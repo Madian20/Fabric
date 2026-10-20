@@ -1,0 +1,44 @@
+/// One row per seller, with location details.
+entity Seller
+	lineageTag: f59ae443-e4d9-41f6-b82c-1665a1d02dce
+	backingTable: dim_sellers
+	keyProperty: seller_id
+
+	/// Unique identifier of the seller (primary key).
+	property seller_id
+		dataType: string
+		lineageTag: c8177c2f-65b5-4787-a929-40e9454bf306
+
+		backingConfiguration
+			valueColumn: dim_sellers.seller_id
+
+	/// City of the seller.
+	property seller_city
+		dataType: string
+		lineageTag: cbaa56dc-872d-4f30-9653-1fbe201b9cd5
+
+		backingConfiguration
+			valueColumn: dim_sellers.seller_city
+
+	/// State where the seller is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	property seller_state
+		dataType: string
+		lineageTag: 6dccb039-e97b-41b8-8823-6609c14544b4
+
+		backingConfiguration
+			valueColumn: dim_sellers.seller_state
+
+		synonym state
+
+		synonym 'region code'
+
+	synonym sellers
+
+	synonym seller
+
+	synonym vendors
+
+	synonym merchants
+
+	synonym stores
+

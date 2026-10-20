@@ -1,0 +1,44 @@
+/// One row per seller, with location details.
+table dim_sellers
+	lineageTag: 28278c29-5c3e-4df4-b321-1ab11fc8d049
+	sourceLineageTag: bd524ba0-5888-4359-9d3e-72faab36ab8b
+
+	/// Unique identifier of the seller (primary key).
+	column seller_id
+		dataType: string
+		lineageTag: c4882f8d-d744-4dab-8d81-ff1b0419d7cd
+		sourceLineageTag: aa8ba346-da64-4224-a9ab-946295ea5185
+		sourceColumn: seller_id
+
+	/// City of the seller.
+	column seller_city
+		dataType: string
+		lineageTag: 8b8f57d3-6181-47b9-9a59-39791b86ee18
+		sourceLineageTag: d40b867c-33c5-455f-91d3-2a0fbc0ea077
+		sourceColumn: seller_city
+
+	/// State where the seller is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	column seller_state
+		dataType: string
+		lineageTag: 29436c6e-009f-4b06-a3ef-778384c0cbb7
+		sourceLineageTag: d5e8827d-c49a-471e-a5e3-4533fe75cf2f
+		sourceColumn: seller_state
+
+	partition dim_sellers-partition = entity
+		mode: directQuery
+		source
+			entityName: dim_sellers
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

@@ -1,0 +1,99 @@
+/// One row per item in an order. Holds price and freight, and links orders to products and sellers.
+table fact_order_items
+	lineageTag: 14060607-e69b-4cbd-a19c-4d580a15105b
+	sourceLineageTag: [dbo].[fact_order_items]
+
+	/// Product sold (links to dim_products).
+	column product_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 5c9a8d72-63ad-40ab-a4a3-635a4347ab46
+		sourceLineageTag: product_id
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Order the item belongs to (links to dim_orders).
+	column order_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: f6ce84da-5318-4246-b818-aa0c6b5eb8b5
+		sourceLineageTag: order_id
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sequence number of the item within the order. Together with order_id it identifies the row.
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 921fb066-8f11-45be-aa77-cd300e8607ea
+		sourceLineageTag: order_item_id
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Seller who fulfilled the item (links to dim_sellers).
+	column seller_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 970c2861-aa48-4fec-82d1-ae13c3279dc5
+		sourceLineageTag: seller_id
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Deadline for the seller to hand the item to the carrier.
+	column shipping_limit_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 12e2f7bf-ed4b-49ae-a898-8e07f506d132
+		sourceLineageTag: shipping_limit_date
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Item price, excluding freight.
+	column price
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(12, 2)
+		lineageTag: 59ab5d97-2577-4186-9267-16899b3194b1
+		sourceLineageTag: price
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Freight cost charged for the item.
+	column freight_value
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(12, 2)
+		lineageTag: 9b9ef3c9-db86-4215-87b5-0943141b1221
+		sourceLineageTag: freight_value
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition fact_order_items = entity
+		mode: directLake
+		source
+			entityName: fact_order_items
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,45 @@
+relationship 63bc8199-d870-3dac-dffb-8aa5f19ac996
+	fromColumn: fact_order_items.product_id
+	toColumn: dim_products.product_id
+
+relationship 167d0174-d7da-f55e-5d0a-d34928da3c1c
+	fromColumn: fact_order_items.seller_id
+	toColumn: dim_sellers.seller_id
+
+relationship 2887ecad-9dc7-2f6d-2010-06b748551769
+	isActive: false
+	fromColumn: fact_order_items.shipping_limit_date
+	toColumn: dim_date.date
+
+relationship 91c83030-e763-73ee-0b4c-81d77e3323e2
+	fromColumn: fact_order_items.order_id
+	toColumn: dim_orders.order_id
+
+relationship 3b389b9b-d208-d546-f840-3c37521eede4
+	fromColumn: fact_order_payments.order_id
+	toColumn: dim_orders.order_id
+
+relationship 26a59ebe-5227-b56c-e02d-d0086aafceff
+	fromColumn: fact_order_reviews.order_id
+	toColumn: dim_orders.order_id
+
+relationship 80ec6690-c8cf-563d-cce4-80605fcb732a
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: dim_customers.customer_id
+	toColumn: dim_orders.customer_id
+
+relationship f15cbd0e-dc5f-9c60-8699-75a8c9bf1644
+	fromColumn: dim_orders.order_purchase_date
+	toColumn: dim_date.date
+
+relationship 68ddb0ea-3e87-a0d1-f309-d0d3e6146fcc
+	isActive: false
+	fromColumn: dim_orders.order_estimated_delivery_date
+	toColumn: dim_date.date
+
+relationship 2a9ae1ff-fa33-2ca0-de4a-c06d991e0411
+	isActive: false
+	fromColumn: dim_orders.order_delivered_customer_date
+	toColumn: dim_date.date
+

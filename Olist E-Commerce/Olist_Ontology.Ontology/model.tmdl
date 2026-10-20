@@ -1,0 +1,22 @@
+model Model
+
+ref table dim_customers
+ref table dim_date
+ref table dim_products
+ref table dim_sellers
+ref table fact_order_items
+ref table fact_order_payments
+ref table fact_order_reviews
+ref table dim_orders
+
+ref entity Customer
+ref entity Date
+ref entity Order
+ref entity Product
+ref entity Seller
+ref entity OrderItem
+ref entity OrderPayment
+ref entity OrderReview
+
+ref namespace default
+

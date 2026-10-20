@@ -1,0 +1,58 @@
+/// One row per customer ID, with location details.
+entity Customer
+	lineageTag: 63166605-42f1-4846-b121-a994ebf0e352
+	backingTable: dim_customers
+	keyProperty: customer_id
+
+	/// Order-level customer key, one-to-one with dim_orders.
+	property customer_id
+		dataType: string
+		lineageTag: d053200e-30e1-4392-92df-a71c5b65a82d
+
+		backingConfiguration
+			valueColumn: dim_customers.customer_id
+
+	/// Persistent identifier of the actual customer. Use it to count unique customers or repeat buyers.
+	property customer_unique_id
+		dataType: string
+		lineageTag: 9c7522bd-a1f7-415e-b4e4-82296ecade46
+
+		backingConfiguration
+			valueColumn: dim_customers.customer_unique_id
+
+		synonym 'unique customer id'
+
+		synonym 'customer identifier'
+
+		synonym 'buyer id'
+
+	/// City of the customer.
+	property customer_city
+		dataType: string
+		lineageTag: 283c0ac9-a7f0-4516-8f55-3fce0a91056b
+
+		backingConfiguration
+			valueColumn: dim_customers.customer_city
+
+	/// State where the customer is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	property customer_state
+		dataType: string
+		lineageTag: 4a8f5dcd-89f2-4475-b4c5-3bf27d8fc302
+
+		backingConfiguration
+			valueColumn: dim_customers.customer_state
+
+		synonym state
+
+		synonym 'region code'
+
+	synonym customers
+
+	synonym customer
+
+	synonym buyer
+
+	synonym client
+
+	synonym purchasers
+

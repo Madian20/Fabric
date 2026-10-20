@@ -1,0 +1,123 @@
+/// One row per order, the hub of the model. Holds order status and lifecycle dates, and links to customers, the date table, and all fact tables.
+table dim_orders
+	lineageTag: e4e0642c-dcc4-4743-9d35-0883e6af8816
+	sourceLineageTag: [dbo].[dim_orders]
+
+	/// Unique identifier of the order (primary key).
+	column order_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 4d869396-6723-456f-b728-bdb4ce00cdf6
+		sourceLineageTag: order_id
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Order-level customer key, linking the order to dim_customers.
+	column customer_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 2aaa031d-3f47-4d19-950e-dc4ba1a37e58
+		sourceLineageTag: customer_id
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		changedProperty = Description
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Current status of the order (e.g., delivered, shipped, canceled).
+	column order_status
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 33e59cf5-a402-41a9-be85-84e15b0062a5
+		sourceLineageTag: order_status
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date and time the customer placed the order.
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 1d125206-d5ab-4a43-a896-27e51c9fce47
+		sourceLineageTag: order_purchase_timestamp
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date and time the payment was approved.
+	column order_approved_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 98e66b4c-da87-4ec0-ab47-da46d42da8b8
+		sourceLineageTag: order_approved_at
+		summarizeBy: none
+		sourceColumn: order_approved_at
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date the order was handed to the logistics carrier.
+	column order_delivered_carrier_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: f112a689-1d23-4d39-b484-31a17844ec40
+		sourceLineageTag: order_delivered_carrier_date
+		summarizeBy: none
+		sourceColumn: order_delivered_carrier_date
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date the order was delivered to the customer.
+	column order_delivered_customer_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: d76e92de-8cea-4f2f-b85f-159f6386b569
+		sourceLineageTag: order_delivered_customer_date
+		summarizeBy: none
+		sourceColumn: order_delivered_customer_date
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Delivery date estimated for the customer at purchase time.
+	column order_estimated_delivery_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 60c2d967-bc5c-4821-b1c2-7eadda6548e2
+		sourceLineageTag: order_estimated_delivery_date
+		summarizeBy: none
+		sourceColumn: order_estimated_delivery_date
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Purchase date without time. Used for the relationship to dim_date.
+	column order_purchase_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 441a7732-3366-4f44-af05-32859819afd8
+		sourceLineageTag: order_purchase_date
+		summarizeBy: none
+		sourceColumn: order_purchase_date
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_orders = entity
+		mode: directLake
+		source
+			entityName: dim_orders
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	changedProperty = Description
+
+	annotation PBI_ResultType = Table
+

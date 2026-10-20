@@ -1,0 +1,116 @@
+/// One row per order, the hub of the model. Holds order status and lifecycle dates, and links to customers, the date table, and all fact tables.
+entity Order
+	lineageTag: bc3eda1e-3058-448f-85cb-f4ff7acf70f1
+	backingTable: dim_orders
+	keyProperty: order_id
+
+	/// Unique identifier of the order (primary key).
+	property order_id
+		dataType: string
+		lineageTag: 0c00ece0-da45-428e-a70c-dedf278f2e0d
+
+		backingConfiguration
+			valueColumn: dim_orders.order_id
+
+	/// Order-level customer key, linking the order to dim_customers.
+	property customer_id
+		dataType: string
+		lineageTag: 6e1a7a74-cc93-495e-8a48-6f39d1618443
+
+		backingConfiguration
+			valueColumn: dim_orders.customer_id
+
+	/// Current status of the order (e.g., delivered, shipped, canceled).
+	property order_status
+		dataType: string
+		lineageTag: 3d5f0fae-6302-4286-9880-580b245e381c
+
+		backingConfiguration
+			valueColumn: dim_orders.order_status
+
+		synonym status
+
+		synonym 'order state'
+
+	/// Date and time the customer placed the order.
+	property order_purchase_timestamp
+		dataType: dateTime
+		lineageTag: a3cab6ba-5181-4996-9fec-c81ac53e4252
+
+		backingConfiguration
+			valueColumn: dim_orders.order_purchase_timestamp
+
+		synonym 'purchase datetime'
+
+		synonym 'order placed time'
+
+	/// Date and time the payment was approved.
+	property order_approved_at
+		dataType: dateTime
+		lineageTag: b7c6b670-405b-4a90-b17d-02c7b7c6dc92
+
+		backingConfiguration
+			valueColumn: dim_orders.order_approved_at
+
+		synonym 'approved time'
+
+		synonym 'payment approved time'
+
+	/// Date the order was handed to the logistics carrier.
+	property order_delivered_carrier_date
+		dataType: dateTime
+		lineageTag: cd8cb172-459c-4cec-a291-7fd4e53bbf3c
+
+		backingConfiguration
+			valueColumn: dim_orders.order_delivered_carrier_date
+
+		synonym 'carrier handoff date'
+
+		synonym 'handoff date'
+
+	/// Date the order was delivered to the customer.
+	property order_delivered_customer_date
+		dataType: dateTime
+		lineageTag: 0905fdf9-58d4-4a47-bfcd-1d5a725e0875
+
+		backingConfiguration
+			valueColumn: dim_orders.order_delivered_customer_date
+
+		synonym 'delivered date'
+
+		synonym 'customer delivery date'
+
+	/// Delivery date estimated for the customer at purchase time.
+	property order_estimated_delivery_date
+		dataType: dateTime
+		lineageTag: 4e56ac94-e84c-45f8-9c0f-b679323a7a7e
+
+		backingConfiguration
+			valueColumn: dim_orders.order_estimated_delivery_date
+
+		synonym 'estimated delivery date'
+
+		synonym 'expected delivery date'
+
+	/// Purchase date without time. Used for the relationship to dim_date.
+	property order_purchase_date
+		dataType: dateTime
+		lineageTag: b6d8e0dd-0a24-4f92-bddd-9fc221dbcb8d
+
+		backingConfiguration
+			valueColumn: dim_orders.order_purchase_date
+
+		synonym 'purchase date'
+
+		synonym 'order date'
+
+	synonym orders
+
+	synonym order
+
+	synonym 'sales orders'
+
+	synonym purchases
+
+	synonym 'order headers'
+

@@ -1,0 +1,92 @@
+/// One row per customer review of an order.
+entity OrderReview
+	lineageTag: 082984c1-c4a4-411a-81c3-380143f40d83
+	backingTable: fact_order_reviews
+	keyProperty: review_id
+
+	/// Order being reviewed (links to dim_orders).
+	property order_id
+		dataType: string
+		lineageTag: df1a3908-6c29-4133-a412-7cdd0b75c656
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.order_id
+
+	/// Unique identifier of the review.
+	property review_id
+		dataType: string
+		lineageTag: 8fcb43de-5e7a-48d9-bfd7-db7679a81b77
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_id
+
+	/// Satisfaction score from 1 (worst) to 5 (best).
+	property review_score
+		dataType: int64
+		lineageTag: 1fd7f893-946a-4bd2-82ff-b075b7d2bb58
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_score
+
+		synonym rating
+
+		synonym stars
+
+	/// Optional title of the review comment.
+	property review_comment_title
+		dataType: string
+		lineageTag: 4f3f64e0-cdf4-46c1-b5f9-8897bf54cb1c
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_comment_title
+
+		synonym 'comment title'
+
+		synonym 'review title'
+
+	/// Optional free-text comment left by the customer.
+	property review_comment_message
+		dataType: string
+		lineageTag: a58e4fd3-9730-4b4d-b4f6-032fe8b8facc
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_comment_message
+
+		synonym comment
+
+		synonym 'feedback text'
+
+	/// Date the satisfaction survey was sent to the customer.
+	property review_creation_date
+		dataType: dateTime
+		lineageTag: 1cd6afe7-0d66-4298-9b37-e7ece37fd89c
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_creation_date
+
+		synonym 'survey sent date'
+
+		synonym 'request date'
+
+	/// Date and time the customer answered the survey.
+	property review_answer_timestamp
+		dataType: dateTime
+		lineageTag: 56187873-fe4a-4e80-b9ac-25ab335fc2dc
+
+		backingConfiguration
+			valueColumn: fact_order_reviews.review_answer_timestamp
+
+		synonym 'response timestamp'
+
+		synonym 'review answered time'
+
+	synonym reviews
+
+	synonym ratings
+
+	synonym feedback
+
+	synonym 'customer reviews'
+
+	synonym 'survey responses'
+

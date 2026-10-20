@@ -1,0 +1,38 @@
+/// Date table used for time intelligence. Marked as the model's date table
+entity Date
+	lineageTag: a6439a38-ce38-442c-aa3d-2487c84f6c78
+	backingTable: dim_date
+	keyProperty: date_key
+
+	/// Integer representation of the date in YYYYMMDD format (e.g., 20180131). Not used in relationships.
+	property date_key
+		dataType: int64
+		lineageTag: d84a9502-0231-4876-9d49-4a41dc1939e5
+
+		backingConfiguration
+			valueColumn: dim_date.date_key
+
+		synonym 'date key'
+
+		synonym yyyymmdd
+
+		synonym 'calendar key'
+
+	/// Calendar date, one row per day. Key column that relates dim_date to dim_orders.
+	property date
+		dataType: dateTime
+		lineageTag: ce44cfd4-2ef4-4361-9073-7a7d5614f89d
+
+		backingConfiguration
+			valueColumn: dim_date.date
+
+	synonym date
+
+	synonym calendar
+
+	synonym 'calendar date'
+
+	synonym day
+
+	synonym 'time dimension'
+

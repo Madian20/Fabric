@@ -1,0 +1,91 @@
+/// One row per item in an order. Holds price and freight, and links orders to products and sellers.
+entity OrderItem
+	lineageTag: 0ff2af97-4bf7-4d3a-84b6-4329e4284f62
+	backingTable: fact_order_items
+	keyProperty: order_id
+	keyProperty: order_item_id
+
+	/// Product sold (links to dim_products).
+	property product_id
+		dataType: string
+		lineageTag: bd66bebe-fbbc-49f8-ae5d-068f9f7cbfdc
+
+		backingConfiguration
+			valueColumn: fact_order_items.product_id
+
+	/// Order the item belongs to (links to dim_orders).
+	property order_id
+		dataType: string
+		lineageTag: 6672c94d-93c1-460d-8572-5c998b8be535
+
+		backingConfiguration
+			valueColumn: fact_order_items.order_id
+
+	/// Sequence number of the item within the order. Together with order_id it identifies the row.
+	property order_item_id
+		dataType: int64
+		lineageTag: 6a2e57fd-d28a-47ad-97e3-d0a7f35e6560
+
+		backingConfiguration
+			valueColumn: fact_order_items.order_item_id
+
+		synonym 'item sequence'
+
+		synonym 'line number'
+
+		synonym 'order line number'
+
+	/// Seller who fulfilled the item (links to dim_sellers).
+	property seller_id
+		dataType: string
+		lineageTag: e3f9be5b-6d63-447d-843b-e0670e82e812
+
+		backingConfiguration
+			valueColumn: fact_order_items.seller_id
+
+	/// Deadline for the seller to hand the item to the carrier.
+	property shipping_limit_date
+		dataType: dateTime
+		lineageTag: 16b1f193-7381-4557-86e7-36a6856c5a20
+
+		backingConfiguration
+			valueColumn: fact_order_items.shipping_limit_date
+
+		synonym 'shipping deadline'
+
+		synonym 'carrier deadline'
+
+	/// Item price, excluding freight.
+	property price
+		dataType: decimal
+		lineageTag: 88f08fb7-2018-494c-a9bb-4a0b18a5c3a7
+
+		backingConfiguration
+			valueColumn: fact_order_items.price
+
+		synonym 'item price'
+
+		synonym 'sales price'
+
+	/// Freight cost charged for the item.
+	property freight_value
+		dataType: decimal
+		lineageTag: 81c5f8e2-e836-4f5c-8a38-fce3292698b6
+
+		backingConfiguration
+			valueColumn: fact_order_items.freight_value
+
+		synonym 'freight cost'
+
+		synonym 'shipping cost'
+
+	synonym 'order items'
+
+	synonym 'line items'
+
+	synonym items
+
+	synonym 'order lines'
+
+	synonym 'basket items'
+

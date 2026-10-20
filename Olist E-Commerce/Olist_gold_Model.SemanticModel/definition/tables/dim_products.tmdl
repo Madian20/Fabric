@@ -1,0 +1,84 @@
+/// One row per product, with category and physical attributes.
+table dim_products
+	lineageTag: 717ad65d-ed76-43f2-b1a8-610f6f302e1d
+	sourceLineageTag: [dbo].[dim_products]
+
+	/// Unique identifier of the product (primary key).
+	column product_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 592d1e12-572a-4950-9ea3-944b4136521f
+		sourceLineageTag: product_id
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Product weight in grams.
+	column product_weight_g
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: e942e17e-4076-453d-b2b4-99922d4fcfd8
+		sourceLineageTag: product_weight_g
+		summarizeBy: none
+		sourceColumn: product_weight_g
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Product length in centimeters.
+	column product_length_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: ac01131b-9ce3-4a74-9d7b-8fb79a0a6558
+		sourceLineageTag: product_length_cm
+		summarizeBy: none
+		sourceColumn: product_length_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Product height in centimeters.
+	column product_height_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 383197d2-355a-42e2-a950-8b490c0e7db0
+		sourceLineageTag: product_height_cm
+		summarizeBy: none
+		sourceColumn: product_height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Product width in centimeters.
+	column product_width_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c4e4fc51-1949-4870-b1d8-660dd541c2f8
+		sourceLineageTag: product_width_cm
+		summarizeBy: none
+		sourceColumn: product_width_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Name of the product category.
+	column product_category_name
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 799e2726-2c24-435e-ad93-61eb59b24edd
+		sourceLineageTag: product_category_name
+		summarizeBy: none
+		sourceColumn: product_category_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_products = entity
+		mode: directLake
+		source
+			entityName: dim_products
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

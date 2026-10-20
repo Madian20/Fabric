@@ -1,0 +1,70 @@
+/// A customer places one or more orders.
+entityRelationship places
+	label: customer_places_order_customer_id
+	lineageTag: e8363045-7247-4091-95af-308ab696286d
+	fromEntity: Customer
+	toEntity: Order
+
+	backingConfiguration
+		relationship: dim_customers_to_dim_orders
+
+/// An order item is of a single product.
+entityRelationship is_of
+	label: order_item_is_of_product_product_id
+	lineageTag: fb796828-09dc-4fa7-b666-89c67bc1cb96
+	fromEntity: OrderItem
+	toEntity: Product
+
+	backingConfiguration
+		relationship: fact_order_items_to_dim_products
+
+/// An order item is sold by a seller.
+entityRelationship sold_by
+	label: order_item_sold_by_seller_seller_id
+	lineageTag: fd8ee680-9260-49a4-ab4c-d671465a1a4e
+	fromEntity: OrderItem
+	toEntity: Seller
+
+	backingConfiguration
+		relationship: fact_order_items_to_dim_sellers
+
+/// An order contains one or more order items.
+entityRelationship contains
+	label: order_contains_order_item_order_id
+	lineageTag: 35e3657a-1be0-4de3-8f8b-87c517160ef5
+	fromEntity: Order
+	toEntity: OrderItem
+
+	backingConfiguration
+		relationship: fact_order_items_to_dim_orders
+
+/// An order can have one or more payments.
+entityRelationship has_payment
+	label: order_has_payment_order_id
+	lineageTag: cc50be6e-2d2d-4118-8497-836a349ce0ae
+	fromEntity: Order
+	toEntity: OrderPayment
+
+	backingConfiguration
+		relationship: fact_order_payments_to_dim_orders
+
+/// An order can have a review.
+entityRelationship has_review
+	label: order_has_review_order_id
+	lineageTag: e77f08fa-11f7-4a7c-932a-d47cce77cea6
+	fromEntity: Order
+	toEntity: OrderReview
+
+	backingConfiguration
+		relationship: fact_order_reviews_to_dim_orders
+
+/// An order is placed on a date.
+entityRelationship placed_on
+	label: order_placed_on_date_order_purchase_date
+	lineageTag: 572d6829-c4a7-44b3-8dc9-c2913b670d85
+	fromEntity: Order
+	toEntity: Date
+
+	backingConfiguration
+		relationship: dim_orders_to_dim_date
+

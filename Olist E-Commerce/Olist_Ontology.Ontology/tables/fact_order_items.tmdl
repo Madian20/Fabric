@@ -1,0 +1,72 @@
+/// One row per item in an order. Holds price and freight, and links orders to products and sellers.
+table fact_order_items
+	lineageTag: 8a90bde8-129b-464d-a36b-b6f1821d379d
+	sourceLineageTag: 14060607-e69b-4cbd-a19c-4d580a15105b
+
+	/// Product sold (links to dim_products).
+	column product_id
+		dataType: string
+		lineageTag: 1ad86186-1954-4087-809a-a344e5a5cc68
+		sourceLineageTag: 5c9a8d72-63ad-40ab-a4a3-635a4347ab46
+		sourceColumn: product_id
+
+	/// Order the item belongs to (links to dim_orders).
+	column order_id
+		dataType: string
+		lineageTag: 4f195870-f662-4172-94c1-6f9c549c6707
+		sourceLineageTag: f6ce84da-5318-4246-b818-aa0c6b5eb8b5
+		sourceColumn: order_id
+
+	/// Sequence number of the item within the order. Together with order_id it identifies the row.
+	column order_item_id
+		dataType: int64
+		lineageTag: e0d85e83-df97-4fd6-aab7-b89de44ad5b2
+		sourceLineageTag: 921fb066-8f11-45be-aa77-cd300e8607ea
+		sourceColumn: order_item_id
+
+	/// Seller who fulfilled the item (links to dim_sellers).
+	column seller_id
+		dataType: string
+		lineageTag: 0c3e7f48-a311-431a-8d1e-d79d7adbcc63
+		sourceLineageTag: 970c2861-aa48-4fec-82d1-ae13c3279dc5
+		sourceColumn: seller_id
+
+	/// Deadline for the seller to hand the item to the carrier.
+	column shipping_limit_date
+		dataType: dateTime
+		lineageTag: 5a442331-e340-429c-b7da-b105ff601a84
+		sourceLineageTag: 12e2f7bf-ed4b-49ae-a898-8e07f506d132
+		sourceColumn: shipping_limit_date
+
+	/// Item price, excluding freight.
+	column price
+		dataType: decimal
+		lineageTag: f25cbbe2-a4e3-48cd-920c-2cdd782b7e19
+		sourceLineageTag: 59ab5d97-2577-4186-9267-16899b3194b1
+		sourceColumn: price
+
+	/// Freight cost charged for the item.
+	column freight_value
+		dataType: decimal
+		lineageTag: 5b0bd8c5-1fb7-4a5b-b0d5-ab3190faea2f
+		sourceLineageTag: 9b9ef3c9-db86-4215-87b5-0943141b1221
+		sourceColumn: freight_value
+
+	partition fact_order_items-partition = entity
+		mode: directQuery
+		source
+			entityName: fact_order_items
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

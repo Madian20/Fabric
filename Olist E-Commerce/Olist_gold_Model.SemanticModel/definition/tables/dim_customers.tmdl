@@ -1,0 +1,58 @@
+/// One row per customer ID, with location details.
+table dim_customers
+	lineageTag: ee17c30e-134b-492c-855e-3e2c0ad029ab
+	sourceLineageTag: [dbo].[dim_customers]
+
+	/// Order-level customer key, one-to-one with dim_orders.
+	column customer_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: fbeaa20e-9483-43d4-8f2b-e227356683e4
+		sourceLineageTag: customer_id
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Persistent identifier of the actual customer. Use it to count unique customers or repeat buyers.
+	column customer_unique_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 5ae60f07-11f7-4b56-9968-0d85413d216a
+		sourceLineageTag: customer_unique_id
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// City of the customer.
+	column customer_city
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 4edaba2a-3bcd-43b5-ba48-c31b54099166
+		sourceLineageTag: customer_city
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = Automatic
+
+	/// State where the customer is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	column customer_state
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 2f9285b9-4e48-4c47-b726-a180c8e1334a
+		sourceLineageTag: customer_state
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_customers = entity
+		mode: directLake
+		source
+			entityName: dim_customers
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

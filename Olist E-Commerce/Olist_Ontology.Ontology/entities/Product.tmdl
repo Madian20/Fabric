@@ -1,0 +1,92 @@
+/// One row per product, with category and physical attributes.
+entity Product
+	lineageTag: 7009ee4d-e55b-402d-9305-b2b0efa6b207
+	backingTable: dim_products
+	keyProperty: product_id
+
+	/// Unique identifier of the product (primary key).
+	property product_id
+		dataType: string
+		lineageTag: aa5e3033-ae75-47c7-99d9-c0906b7becbe
+
+		backingConfiguration
+			valueColumn: dim_products.product_id
+
+	/// Product weight in grams.
+	property product_weight_g
+		dataType: int64
+		lineageTag: 8e79d589-b7ac-4bbf-8592-f9f69d74383a
+
+		backingConfiguration
+			valueColumn: dim_products.product_weight_g
+
+		synonym weight
+
+		synonym grams
+
+		synonym 'product weight'
+
+	/// Product length in centimeters.
+	property product_length_cm
+		dataType: int64
+		lineageTag: e10d4f6c-d169-4a40-b301-20d92af9e91b
+
+		backingConfiguration
+			valueColumn: dim_products.product_length_cm
+
+		synonym length
+
+		synonym 'product length'
+
+		synonym 'length cm'
+
+	/// Product height in centimeters.
+	property product_height_cm
+		dataType: int64
+		lineageTag: cb84bf33-9c74-4c57-812e-48fed104bb45
+
+		backingConfiguration
+			valueColumn: dim_products.product_height_cm
+
+		synonym height
+
+		synonym 'product height'
+
+		synonym 'height cm'
+
+	/// Product width in centimeters.
+	property product_width_cm
+		dataType: int64
+		lineageTag: 53cd18e9-f912-4325-941e-9acca853a82a
+
+		backingConfiguration
+			valueColumn: dim_products.product_width_cm
+
+		synonym width
+
+		synonym 'product width'
+
+		synonym 'width cm'
+
+	/// Name of the product category.
+	property product_category_name
+		dataType: string
+		lineageTag: f991ba5b-270b-4d82-81d1-d09c479e02a6
+
+		backingConfiguration
+			valueColumn: dim_products.product_category_name
+
+		synonym category
+
+		synonym 'product category'
+
+	synonym products
+
+	synonym product
+
+	synonym items
+
+	synonym catalog
+
+	synonym sku
+

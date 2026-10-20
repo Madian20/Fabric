@@ -1,0 +1,42 @@
+relationship fact_order_items_to_dim_products
+	fromColumn: fact_order_items.product_id
+	toColumn: dim_products.product_id
+
+	annotation ONT_SourceRelationship = 63bc8199-d870-3dac-dffb-8aa5f19ac996
+
+relationship fact_order_items_to_dim_sellers
+	fromColumn: fact_order_items.seller_id
+	toColumn: dim_sellers.seller_id
+
+	annotation ONT_SourceRelationship = 167d0174-d7da-f55e-5d0a-d34928da3c1c
+
+relationship fact_order_items_to_dim_orders
+	fromColumn: dim_orders.order_id
+	toColumn: fact_order_items.order_id
+
+	annotation ONT_SourceRelationship = 91c83030-e763-73ee-0b4c-81d77e3323e2
+
+relationship fact_order_payments_to_dim_orders
+	fromColumn: dim_orders.order_id
+	toColumn: fact_order_payments.order_id
+
+	annotation ONT_SourceRelationship = 3b389b9b-d208-d546-f840-3c37521eede4
+
+relationship fact_order_reviews_to_dim_orders
+	fromColumn: dim_orders.order_id
+	toColumn: fact_order_reviews.order_id
+
+	annotation ONT_SourceRelationship = 26a59ebe-5227-b56c-e02d-d0086aafceff
+
+relationship dim_customers_to_dim_orders
+	fromColumn: dim_customers.customer_id
+	toColumn: dim_orders.customer_id
+
+	annotation ONT_SourceRelationship = 80ec6690-c8cf-563d-cce4-80605fcb732a
+
+relationship dim_orders_to_dim_date
+	fromColumn: dim_orders.order_purchase_date
+	toColumn: dim_date.date
+
+	annotation ONT_SourceRelationship = f15cbd0e-dc5f-9c60-8699-75a8c9bf1644
+

@@ -1,0 +1,139 @@
+/// Holds all DAX measures for the model (revenue, orders, customers, delivery, reviews, and year-over-year). Contains no business data.
+table 'Olist Measures'
+	lineageTag: f113b43c-871f-4e29-a21e-df0ef980020a
+
+	/// Sum of item prices, excluding freight.
+	measure 'Total Revenue' = SUM(fact_order_items[price])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 1091a0bd-b07f-4fe5-9ffb-d77870e01465
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Sum of freight costs charged on items.
+	measure 'Total Freight' = SUM(fact_order_items[freight_value])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 9187280b-8801-42ce-af28-593ffc2d5c2d
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Total Revenue plus Total Freight.
+	measure 'Total Order Value' = [Total Revenue] + [Total Freight]
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 13753ea5-992e-420a-a7e7-46f44923d42b
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Number of distinct orders.
+	measure Orders = DISTINCTCOUNT(fact_order_items[order_id])
+		formatString: 0
+		lineageTag: c84c6965-1f6b-4119-ab3f-4e95eb67571c
+
+	/// Number of items sold (one row per order item).
+	measure 'Items Sold' = COUNTROWS(fact_order_items)
+		formatString: 0
+		lineageTag: 7e3f15d2-2005-42d8-a9c2-dadc5fb3737d
+
+	/// Average revenue per order (Total Revenue divided by Orders).
+	measure 'Avg Order Value' = DIVIDE([Total Revenue], [Orders])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: fbc63a04-8b2f-4ed8-ace4-ff27ff91fd2c
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Number of distinct customers (by customer_unique_id) who placed the orders in the current filter context.
+	measure 'Unique Customers' = ```
+							
+							        CALCULATE(
+							            DISTINCTCOUNT(dim_customers[customer_unique_id]),
+							            TREATAS(VALUES(fact_order_items[order_id]), dim_orders[order_id])
+							        )
+			```
+		formatString: 0
+		lineageTag: 6af9aa65-46f0-4d6a-b35a-789fd597479a
+
+	/// Average number of orders per unique customer (Orders divided by Unique Customers). Indicates repeat purchase behavior.
+	measure 'Orders per Customer' = DIVIDE([Orders], [Unique Customers])
+		lineageTag: 669f9800-6ff1-408e-905e-3e6e4ea86b52
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Average customer review score, from 1 (worst) to 5 (best).
+	measure 'Avg Review Score' = AVERAGE(fact_order_reviews[review_score])
+		lineageTag: b836992d-6c41-4537-896f-6c3f73af4182
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Average number of days from purchase to delivery to the customer. Delivered orders only.
+	measure 'Avg Delivery Days' = ```
+							
+							        AVERAGEX(
+							            FILTER(dim_orders, NOT ISBLANK(dim_orders[order_delivered_customer_date])),
+							            DATEDIFF(dim_orders[order_purchase_date], dim_orders[order_delivered_customer_date], DAY)
+							        )
+			```
+		lineageTag: 03e008c1-5fdd-4a09-a31e-f5dcbec3ef29
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Number of delivered orders that arrived after the estimated delivery date.
+	measure 'Late Deliveries' = ```
+							
+							        COUNTROWS(
+							            FILTER(
+							                dim_orders,
+							                NOT ISBLANK(dim_orders[order_delivered_customer_date])
+							                    && dim_orders[order_delivered_customer_date] > dim_orders[order_estimated_delivery_date]
+							            )
+							        )
+			```
+		formatString: 0
+		lineageTag: 1954348b-3833-49c9-ac72-1e5c230e64b4
+
+	/// Share of delivered orders that arrived after the estimated delivery date.
+	measure 'Late Delivery %' = ```
+							
+							        DIVIDE(
+							            [Late Deliveries],
+							            CALCULATE(COUNTROWS(dim_orders), NOT ISBLANK(dim_orders[order_delivered_customer_date]))
+							        )
+			```
+		lineageTag: 135081b7-11fa-42d8-ab1e-52816f060e92
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Total Revenue for the same period in the previous year.
+	measure 'Revenue LY' = ```
+							
+							        CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(dim_date[date]))
+			```
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 543c981e-72cc-42ef-8a93-a56b573ce385
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	/// Year-over-year change in Total Revenue, as a percentage of the previous year's revenue.
+	measure 'Revenue YoY %' = ```
+							
+							        DIVIDE([Total Revenue] - [Revenue LY], [Revenue LY])
+			```
+		lineageTag: b474dff8-7822-4b28-811a-11912d75ca9b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column
+		formatString: 0
+		lineageTag: a972ab16-c7d9-4dcf-bbb8-f12198f8d669
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Olist Measures' = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = eace08fd18d548b090a8780d4abc0f2b
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

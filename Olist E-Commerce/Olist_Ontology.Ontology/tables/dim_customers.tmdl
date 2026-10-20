@@ -1,0 +1,51 @@
+/// One row per customer ID, with location details.
+table dim_customers
+	lineageTag: 519dd8b7-5e4e-4aa9-90da-f51a29fe4103
+	sourceLineageTag: ee17c30e-134b-492c-855e-3e2c0ad029ab
+
+	/// Order-level customer key, one-to-one with dim_orders.
+	column customer_id
+		dataType: string
+		lineageTag: 06424938-baa0-443c-a005-d24b550dcd69
+		sourceLineageTag: fbeaa20e-9483-43d4-8f2b-e227356683e4
+		sourceColumn: customer_id
+
+	/// Persistent identifier of the actual customer. Use it to count unique customers or repeat buyers.
+	column customer_unique_id
+		dataType: string
+		lineageTag: 14964ebd-bf7c-4b58-8bf3-3ed9244e2f98
+		sourceLineageTag: 5ae60f07-11f7-4b56-9968-0d85413d216a
+		sourceColumn: customer_unique_id
+
+	/// City of the customer.
+	column customer_city
+		dataType: string
+		lineageTag: c7264057-afc5-4529-953c-ab943dc0481b
+		sourceLineageTag: 4edaba2a-3bcd-43b5-ba48-c31b54099166
+		sourceColumn: customer_city
+
+	/// State where the customer is located, as a two-letter Brazilian state code (e.g., SP, RJ).
+	column customer_state
+		dataType: string
+		lineageTag: 263cbdfc-b118-436f-ad1d-82b6acaff039
+		sourceLineageTag: 2f9285b9-4e48-4c47-b726-a180c8e1334a
+		sourceColumn: customer_state
+
+	partition dim_customers-partition = entity
+		mode: directQuery
+		source
+			entityName: dim_customers
+			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
+
+		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+
+		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+
+		annotation ONT_ItemKind = Dataset
+
+		annotation ONT_ItemName = Olist_gold_Model
+
+		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+
+		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
+

@@ -1,0 +1,94 @@
+/// One row per customer review of an order.
+table fact_order_reviews
+	lineageTag: 41a46a89-ef73-4850-9929-e7ca734f7dbd
+	sourceLineageTag: [dbo].[fact_order_reviews]
+
+	/// Order being reviewed (links to dim_orders).
+	column order_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 2a238d22-01af-4497-89cd-53c810a1372d
+		sourceLineageTag: order_id
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Unique identifier of the review.
+	column review_id
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: f7bfa893-5cc7-418a-bfa0-a1ab53479b37
+		sourceLineageTag: review_id
+		summarizeBy: none
+		sourceColumn: review_id
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Satisfaction score from 1 (worst) to 5 (best).
+	column review_score
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0e6a2da3-edc0-44da-8b9b-adcace25eaaa
+		sourceLineageTag: review_score
+		summarizeBy: sum
+		sourceColumn: review_score
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Optional title of the review comment.
+	column review_comment_title
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: d1bddc9d-de7e-41bb-9f48-795f76925cfe
+		sourceLineageTag: review_comment_title
+		summarizeBy: none
+		sourceColumn: review_comment_title
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Optional free-text comment left by the customer.
+	column review_comment_message
+		dataType: string
+		sourceProviderType: varchar(-1)
+		lineageTag: 475a3f9c-354f-433f-945d-879329a38ea2
+		sourceLineageTag: review_comment_message
+		summarizeBy: none
+		sourceColumn: review_comment_message
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date the satisfaction survey was sent to the customer.
+	column review_creation_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 5d027d25-f7e2-46cc-bef6-986e5c2b7482
+		sourceLineageTag: review_creation_date
+		summarizeBy: none
+		sourceColumn: review_creation_date
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Date and time the customer answered the survey.
+	column review_answer_timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: ed8a8b42-f3e1-44a2-9efa-8dec78df6904
+		sourceLineageTag: review_answer_timestamp
+		summarizeBy: none
+		sourceColumn: review_answer_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_order_reviews = entity
+		mode: directLake
+		source
+			entityName: fact_order_reviews
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

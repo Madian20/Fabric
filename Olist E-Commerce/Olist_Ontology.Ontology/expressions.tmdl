@@ -1,0 +1,9 @@
+expression 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef' =
+		let
+		    Source = AnalysisServices.Database("powerbi://api.powerbi.com/v1.0/myorg/Olist%20E-Commerce", "Olist_gold_Model"),
+		    Cubes = Table.Combine(Source[Data]),
+		    Cube = Cubes{[Id="Model", Kind="Cube"]}[Data]
+		in
+		    Cube
+	lineageTag: 360c46f1-efff-4ad0-817c-cff22a508c50
+

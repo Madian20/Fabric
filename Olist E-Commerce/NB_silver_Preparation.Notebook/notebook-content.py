@@ -384,44 +384,53 @@ display(
 
 # CELL ********************
 
+# Allow new columns in the source to be added to the Silver table automatically during merge
 spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
-FULL_REFRESH = False   # True = overwrite every Silver table from scratch
+FULL_REFRESH = False   # True = rebuild every Silver table from scratch; False = incremental load
 
 
 def filter_incremental(df, t):
+    # Keep only the new rows by comparing against the watermark column of the existing Silver table
     wm = t.get("watermark_column")
     target = t["target_table"]
+    # Return all rows if: full refresh, no watermark defined, or the Silver table doesn't exist yet
     if FULL_REFRESH or not wm or not spark.catalog.tableExists(target):
         return df
+    # Latest watermark value already loaded into Silver
     last = spark.table(target).agg(F.max(wm)).first()[0]
     if last is None:
         return df
-    # ">=" plus the merge makes re-reading the boundary rows safe; null watermarks are always kept
+    # ">=" re-reads the boundary rows so none are missed; the merge below prevents duplicates.
+    # Rows with a null watermark can't be compared, so they are always kept.
     return df.filter((F.col(wm) >= F.lit(last)) | F.col(wm).isNull())
 
 
 def write_silver(df, t):
     target, pk = t["target_table"], t["primary_key"]
+    # Audit column: when this row was loaded into Silver
     df = df.withColumn("_ingested_at", F.current_timestamp())
-    # merge needs one source row per key
+    # Select the new rows, and keep one row per primary key (merge fails if the source has duplicate keys)
     new_rows = filter_incremental(df, t).dropDuplicates(pk).cache()
     n = new_rows.count()
 
     if FULL_REFRESH or not spark.catalog.tableExists(target):
+        # First load (or full refresh): create the table and overwrite any existing data and schema
         (new_rows.write.format("delta").mode("overwrite")
                  .option("overwriteSchema", "true").saveAsTable(target))
         action = "created"
     else:
+        # Incremental load: match source (s) to target (t) rows on the primary key
         cond = " AND ".join(f"t.`{c}` = s.`{c}`" for c in pk)
         (DeltaTable.forName(spark, target).alias("t")
             .merge(new_rows.alias("s"), cond)
-            .whenMatchedUpdateAll()
-            .whenNotMatchedInsertAll()
+            .whenMatchedUpdateAll()      # key exists: update the row
+            .whenNotMatchedInsertAll()   # key is new: insert the row
             .execute())
         action = "merged"
 
-    new_rows.unpersist()
+    new_rows.unpersist()  # free the cached data
+    # Summary of what happened, used for logging
     return {"table": target, "action": action, "rows_processed": n}
 
 # METADATA ********************

@@ -4,10 +4,8 @@ table 'Olist Measures'
 
 	/// Sum of item prices, excluding freight.
 	measure 'Total Revenue' = SUM(fact_order_items[price])
-		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		formatString: 0.000
 		lineageTag: 1091a0bd-b07f-4fe5-9ffb-d77870e01465
-
-		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
 	/// Sum of freight costs charged on items.
 	measure 'Total Freight' = SUM(fact_order_items[freight_value])
@@ -18,7 +16,7 @@ table 'Olist Measures'
 
 	/// Total Revenue plus Total Freight.
 	measure 'Total Order Value' = [Total Revenue] + [Total Freight]
-		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		formatString: \$#,0.000;(\$#,0.000);\$#,0.000
 		lineageTag: 13753ea5-992e-420a-a7e7-46f44923d42b
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
@@ -35,7 +33,7 @@ table 'Olist Measures'
 
 	/// Average revenue per order (Total Revenue divided by Orders).
 	measure 'Avg Order Value' = DIVIDE([Total Revenue], [Orders])
-		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
 		lineageTag: fbc63a04-8b2f-4ed8-ace4-ff27ff91fd2c
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
@@ -59,9 +57,8 @@ table 'Olist Measures'
 
 	/// Average customer review score, from 1 (worst) to 5 (best).
 	measure 'Avg Review Score' = AVERAGE(fact_order_reviews[review_score])
+		formatString: #,0.0
 		lineageTag: b836992d-6c41-4537-896f-6c3f73af4182
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Average number of days from purchase to delivery to the customer. Delivered orders only.
 	measure 'Avg Delivery Days' = ```
@@ -71,9 +68,8 @@ table 'Olist Measures'
 							            DATEDIFF(dim_orders[order_purchase_date], dim_orders[order_delivered_customer_date], DAY)
 							        )
 			```
+		formatString: #,0.00
 		lineageTag: 03e008c1-5fdd-4a09-a31e-f5dcbec3ef29
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Number of delivered orders that arrived after the estimated delivery date.
 	measure 'Late Deliveries' = ```
@@ -91,15 +87,14 @@ table 'Olist Measures'
 
 	/// Share of delivered orders that arrived after the estimated delivery date.
 	measure 'Late Delivery %' = ```
-							
+			
 							        DIVIDE(
 							            [Late Deliveries],
 							            CALCULATE(COUNTROWS(dim_orders), NOT ISBLANK(dim_orders[order_delivered_customer_date]))
 							        )
 			```
+		formatString: #,0.00%;-#,0.00%;#,0.00%
 		lineageTag: 135081b7-11fa-42d8-ab1e-52816f060e92
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Total Revenue for the same period in the previous year.
 	measure 'Revenue LY' = ```
@@ -116,9 +111,8 @@ table 'Olist Measures'
 							
 							        DIVIDE([Total Revenue] - [Revenue LY], [Revenue LY])
 			```
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: b474dff8-7822-4b28-811a-11912d75ca9b
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column Column
 		formatString: 0

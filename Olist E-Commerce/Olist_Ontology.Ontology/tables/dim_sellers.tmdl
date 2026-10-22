@@ -30,15 +30,15 @@ table dim_sellers
 			entityName: dim_sellers
 			expressionSource: 'DirectQuery to AS - 9d196083-db64-4212-9c53-2f2ad21842f8/b4aa6532-ef88-402d-ac82-82c8f32568ef'
 
-		annotation ONT_WorkspaceId = 00000000-0000-0000-0000-000000000000
+		annotation ONT_WorkspaceId = 9d196083-db64-4212-9c53-2f2ad21842f8
 
-		annotation ONT_ItemId = f32568ef-82c8-ac82-402d-ef88b4aa6532
+		annotation ONT_ItemId = b4aa6532-ef88-402d-ac82-82c8f32568ef
 
 		annotation ONT_ItemKind = Dataset
 
 		annotation ONT_ItemName = Olist_gold_Model
 
-		annotation ONT_WorkspaceName = WORKSPACE_NAME_PLACEHOLDER
+		annotation ONT_WorkspaceName = Olist E-Commerce
 
 		annotation ONT_PinnedAtUtc = 2026-10-19T10:15:31.4201249+00:00
 

@@ -59,8 +59,9 @@ The project follows the **Medallion architecture** inside Microsoft Fabric:
 ### Overview Report
 
 <img width="1432" height="814" alt="Screenshot 2026-10-21 154718" src="https://github.com/user-attachments/assets/add9eb66-2d69-44e7-97dd-0d4e4a1087e8" />
+
 ---
 
+## Project Log
 
-
-
+The project was tracked step by step using GitHub Issues, with each task and documentation item recorded in its own issue. For the full details of every stage, see the [closed project issues](https://github.com/Madian20/Fabric/issues?q=is%3Aissue+state%3Aclosed).

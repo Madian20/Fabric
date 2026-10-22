@@ -10,5 +10,33 @@ I chose the **Olist E-Commerce dataset** and built the full pipeline in Microsof
 
 <img width="2732" height="2060" alt="fabric_medallion_architecture_v5 (1)" src="https://github.com/user-attachments/assets/7490bf0a-f8e2-487d-a061-da380fe2a9f5" />
 
+The project follows the **Medallion architecture** inside Microsoft Fabric:
+
+- **Source:** ADLS Gen2 holding the raw Olist CSV files.
+- **Bronze (Lakehouse):** Raw data only, exposed through a OneLake Shortcut with no copying or changes.
+- **Silver (Lakehouse):** Cleaning and incremental load (watermark + merge). The data keeps the same shape as Bronze.
+- **Gold (Warehouse):** Data is reshaped into fact and dimension tables. A semantic model is built on the Gold tables, and an ontology is built on top of the semantic model.
+- **Power BI:** Reports built on the semantic model.
+- **Cross-cutting:** Workspace Identity + OneLake security, and Git integration for version control of the whole project.
+
 ---
+
+## Tools & Technologies
+
+| Layer / Purpose | Tool |
+|---|---|
+| **Source storage** | Azure Data Lake Storage Gen2 (ADLS Gen2) |
+| **Bronze** | Microsoft Fabric Lakehouse (OneLake Shortcut) |
+| **Silver** | Microsoft Fabric Lakehouse, PySpark notebooks, Delta tables |
+| **Gold** | Microsoft Fabric Warehouse |
+| **Semantic layer** | Power BI semantic model (Direct Lake on OneLake), DAX |
+| **Ontology** | Microsoft Fabric Ontology (built on top of the semantic model) |
+| **Reporting** | Power BI |
+| **Security** | Workspace Identity, OneLake security |
+| **Version control** | GitHub, Fabric Git integration |
+| **Project tracking** | GitHub Issues |
+
+---
+
+ابعتلي القسم اللي بعده.
 

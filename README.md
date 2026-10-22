@@ -28,7 +28,7 @@ The project follows the **Medallion architecture** inside Microsoft Fabric:
 | **Source storage** | Azure Data Lake Storage Gen2 (ADLS Gen2) |
 | **Bronze** | Microsoft Fabric Lakehouse (OneLake Shortcut) |
 | **Silver** | Microsoft Fabric Lakehouse, PySpark notebook, Delta tables |
-| **Gold** | Microsoft Fabric Warehouse, PySpark notebook for  (loading the data) |
+| **Gold** | Microsoft Fabric Warehouse, PySpark notebook for  (loading & reshaping the data) |
 | **Semantic layer** | Power BI semantic model (Direct Lake on OneLake), DAX |
 | **Ontology** | Microsoft Fabric Ontology (built on top of the semantic model) |
 | **Reporting** | Power BI |
@@ -44,7 +44,7 @@ The project follows the **Medallion architecture** inside Microsoft Fabric:
 
 <img width="1755" height="623" alt="image" src="https://github.com/user-attachments/assets/87e36f2e-492a-47b9-9173-0899c24611d6" />
 
-### Loading to Silver (notebook)
+### Loading to Silver 
 
 <img width="587" height="659" alt="Screenshot 2026-10-22 130530" src="https://github.com/user-attachments/assets/4fa440bb-ee56-4e7f-bc97-61e5b98a4ac2" />
 
@@ -52,7 +52,7 @@ The project follows the **Medallion architecture** inside Microsoft Fabric:
 
 <img width="1335" height="561" alt="Screenshot 2026-10-18 075004" src="https://github.com/user-attachments/assets/671e32d4-bfe1-4120-a16c-37d32cdbd871" />
 
-### ontolgy 
+### Ontology 
 
 <img width="1377" height="577" alt="Screenshot 2026-10-20 084606" src="https://github.com/user-attachments/assets/5d44c812-9554-42a7-91e6-513da12e0cfa" />
 

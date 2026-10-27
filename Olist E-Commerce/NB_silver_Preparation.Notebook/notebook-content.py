@@ -56,27 +56,30 @@ print("Tables in config:", list(cfg["tables"].keys()))
 
 # CELL ********************
 
-# Accented characters and their plain equivalents (positions match 1:1 for translate)
-ACCENTS_FROM = "áàâãäéèêëíìîïóòôõöúùûüçñ"
-ACCENTS_TO   = "aaaaaeeeeiiiiooooouuuucn"
-
-
 def bronze_path(t):
-    # Build the full path to one raw CSV: root + folder from config + file name
+    # Config path starts with "Files/", which BRONZE_FILES_ROOT already covers
     rel = cfg["bronze_base_path"].split("Files/", 1)[-1].strip("/")
     return f"{BRONZE_FILES_ROOT}/{rel}/{t['source_file']}"
 
 
 def read_raw(path):
-    # all columns are read as strings; types are applied from the config
+    # All columns are read as strings; types are applied later from the config
     return (spark.read
-            .option("header", True)         # first row = column names
-            .option("inferSchema", False)   # keep everything as string
-            .option("multiLine", True)      # allow line breaks inside quoted text (reviews)
-            .option("quote", '"')           # text is wrapped in double quotes
+            .option("header", True)
+            .option("inferSchema", False)
+            .option("multiLine", True)      # reviews contain line breaks inside quoted text
+            .option("quote", '"')
             .option("escape", '"')          # "" inside a quoted field = one literal quote
             .csv(path))
 
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
 
 def apply_global(df, g):
     # Rules applied to every table, switched on/off from the config
@@ -86,9 +89,9 @@ def apply_global(df, g):
     for c in df.columns:
         col = F.col(c)
         if g.get("trim_strings"):
-            col = F.trim(col)                            # remove leading/trailing spaces
+            col = F.trim(col)
         if g.get("empty_string_to_null"):
-            col = F.when(col == "", None).otherwise(col) # "" becomes a real null
+            col = F.when(col == "", None).otherwise(col)
         exprs.append(col.alias(c))
     return df.select(*exprs)
 
@@ -99,6 +102,19 @@ def apply_renames(df, mapping):
         if old in df.columns:
             df = df.withColumnRenamed(old, new)
     return df
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+# Must stay the same length: translate() maps characters by position
+ACCENTS_FROM = "áàâãäéèêëíìîïóòôõöúùûüçñ"
+ACCENTS_TO   = "aaaaaeeeeiiiiooooouuuucn"
 
 
 def apply_text(df, rules):
@@ -111,12 +127,20 @@ def apply_text(df, rules):
             elif op == "upper":
                 col = F.upper(col)
             elif op == "strip_accents":
-                # swap accented letters for plain ones, both lower and upper case
+                # translate() is case-sensitive, so upper-case accents need their own mapping
                 col = F.translate(col, ACCENTS_FROM + ACCENTS_FROM.upper(),
                                   ACCENTS_TO + ACCENTS_TO.upper())
         df = df.withColumn(c, col)
     return df
 
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
 
 def cast_col(col, t):
     if t == "int":
@@ -127,30 +151,41 @@ def cast_col(col, t):
 def apply_types(df, types):
     if not types:
         return df, {}
-    # count values that were present but became null after the cast
+    # Count values that were present but became null after the cast
     fail_exprs = [
         F.sum((F.col(c).isNotNull() & cast_col(F.col(c), t).isNull()).cast("int")).alias(c)
         for c, t in types.items()
     ]
     failures = df.agg(*fail_exprs).first().asDict()
-    # apply the casts for real, after the failures were counted
+    # Cast only after counting, otherwise the failed values can't be detected
     for c, t in types.items():
         df = df.withColumn(c, cast_col(F.col(c), t))
     return df, failures
 
 
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
 
 def clean_table(t):
-    # Full cleaning pipeline for one table; order matters
+    # Full cleaning pipeline for one table. Order matters:
+    # - global rules and renames run first, because the config uses lowercase/renamed column names
+    # - duplicates are dropped last, so rows that differ only in spacing (or in case, for
+    #   standardized columns) become identical first
     raw = read_raw(bronze_path(t))
-    rows_raw = raw.count()                                  # row count before any cleaning
-    df = apply_global(raw, cfg["global"])                   # 1. trim, empty -> null, lowercase names
-    df = apply_renames(df, t.get("rename_columns", {}))     # 2. fix column names
-    df = apply_text(df, t.get("text_standardize", {}))      # 3. standardize text values
-    df, cast_fail = apply_types(df, t.get("types", {}))     # 4. convert to real data types
-    
+    rows_raw = raw.count()
+    df = apply_global(raw, cfg["global"])
+    df = apply_renames(df, t.get("rename_columns", {}))
+    df = apply_text(df, t.get("text_standardize", {}))
+    df, cast_fail = apply_types(df, t.get("types", {}))
+
     if cfg["global"].get("drop_exact_duplicates"):
-        df = df.dropDuplicates()                            # 5. remove fully identical rows
+        df = df.dropDuplicates()
     return df, rows_raw, cast_fail
 
 # METADATA ********************
@@ -168,10 +203,9 @@ def clean_table(t):
 
 def check_table(df, t):
     # Quality report for one cleaned table (nothing is modified here)
-    n = df.count()                                       # total rows
+    n = df.count()                                   
     pk = t["primary_key"]
-    dup_on_key = n - df.dropDuplicates(pk).count()      # report only, not dropped
-    # per column: count how many values are null (True -> 1, then sum)
+    dup_on_key = n - df.dropDuplicates(pk).count()     
     null_counts = df.agg(*[F.sum(F.col(c).isNull().cast("int")).alias(c) for c in df.columns]).first().asDict()
     # convert counts to % of rows; empty table -> empty dict (avoids divide by zero)
     null_pct = {c: round(100 * v / n, 2) for c, v in null_counts.items()} if n else {}
@@ -384,53 +418,66 @@ display(
 
 # CELL ********************
 
-# Allow new columns in the source to be added to the Silver table automatically during merge
+# Lets new source columns be added to the Silver table automatically during merge
 spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
 FULL_REFRESH = False   # True = rebuild every Silver table from scratch; False = incremental load
 
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
 
 def filter_incremental(df, t):
-    # Keep only the new rows by comparing against the watermark column of the existing Silver table
     wm = t.get("watermark_column")
     target = t["target_table"]
-    # Return all rows if: full refresh, no watermark defined, or the Silver table doesn't exist yet
+    # Tables without a watermark (e.g. customers) are re-read in full; the merge keeps them correct
     if FULL_REFRESH or not wm or not spark.catalog.tableExists(target):
         return df
-    # Latest watermark value already loaded into Silver
     last = spark.table(target).agg(F.max(wm)).first()[0]
     if last is None:
         return df
-    # ">=" re-reads the boundary rows so none are missed; the merge below prevents duplicates.
+    # ">=" re-reads the boundary rows so none are missed; the merge in write_silver prevents duplicates.
     # Rows with a null watermark can't be compared, so they are always kept.
     return df.filter((F.col(wm) >= F.lit(last)) | F.col(wm).isNull())
 
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
 
 def write_silver(df, t):
     target, pk = t["target_table"], t["primary_key"]
     # Audit column: when this row was loaded into Silver
     df = df.withColumn("_ingested_at", F.current_timestamp())
-    # Select the new rows, and keep one row per primary key (merge fails if the source has duplicate keys)
+    # One row per primary key: merge fails if the source has duplicate keys.
+    # Cached because it is used twice (count and write).
     new_rows = filter_incremental(df, t).dropDuplicates(pk).cache()
     n = new_rows.count()
 
     if FULL_REFRESH or not spark.catalog.tableExists(target):
-        # First load (or full refresh): create the table and overwrite any existing data and schema
         (new_rows.write.format("delta").mode("overwrite")
                  .option("overwriteSchema", "true").saveAsTable(target))
         action = "created"
     else:
-        # Incremental load: match source (s) to target (t) rows on the primary key
+        # s = new rows (source), t = existing Silver table (target)
         cond = " AND ".join(f"t.`{c}` = s.`{c}`" for c in pk)
         (DeltaTable.forName(spark, target).alias("t")
             .merge(new_rows.alias("s"), cond)
-            .whenMatchedUpdateAll()      # key exists: update the row
-            .whenNotMatchedInsertAll()   # key is new: insert the row
+            .whenMatchedUpdateAll()
+            .whenNotMatchedInsertAll()
             .execute())
         action = "merged"
 
-    new_rows.unpersist()  # free the cached data
-    # Summary of what happened, used for logging
+    new_rows.unpersist()
     return {"table": target, "action": action, "rows_processed": n}
 
 # METADATA ********************

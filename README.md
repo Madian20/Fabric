@@ -46,7 +46,7 @@ The project follows the **Medallion architecture** inside Microsoft Fabric:
 
 ### Loading to Silver 
 
-<img width="587" height="659" alt="Screenshot 2026-10-22 130530" src="https://github.com/user-attachments/assets/4fa440bb-ee56-4e7f-bc97-61e5b98a4ac2" />
+<img width="575" height="748" alt="image" src="https://github.com/user-attachments/assets/39c393bf-c594-4c96-a635-2de2a5afa730" />
 
 ### Semantic Model
 
